@@ -217,6 +217,7 @@ class ClueDossier extends StatelessWidget {
         ),
       );
     } else if (imageUrl.contains('australia.png')) {
+      print('Creating Australia flag placeholder');
       return Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -240,6 +241,77 @@ class ClueDossier extends StatelessWidget {
           gradient: LinearGradient(
             colors: [Color(0xFF00732F), Color(0xFFFFFFFF), Color(0xFF000000), Color(0xFFFF0000)],
             stops: [0.0, 0.25, 0.5, 1.0],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.flag,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+      );
+    } else if (imageUrl.contains('monaco.png')) {
+      print('Creating Monaco flag placeholder');
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFCE1126), Color(0xFFFFFFFF)],
+            stops: [0.0, 1.0],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.flag,
+            color: Color(0xFFCE1126),
+            size: 20,
+          ),
+        ),
+      );
+    } else if (imageUrl.contains('brazil.png')) {
+      print('Creating Brazil flag placeholder');
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF009639), Color(0xFFFFDF00), Color(0xFF002776)],
+            stops: [0.0, 0.5, 1.0],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.flag,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+      );
+    } else if (imageUrl.contains('canada.png')) {
+      print('Creating Canada flag placeholder');
+      return Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFFD52B1E),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.flag,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+      );
+    } else if (imageUrl.contains('netherlands.png')) {
+      print('Creating Netherlands flag placeholder');
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFAE1C28), Color(0xFFFFFFFF), Color(0xFF21468B)],
+            stops: [0.0, 0.5, 1.0],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),

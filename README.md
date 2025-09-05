@@ -2,145 +2,100 @@
 
 A cross-platform geo-detective puzzle game built with Flutter. Test your geography knowledge by guessing locations around the world!
 
-## 🎮 Features
+## 💡 Project Idea
 
-- **Three Difficulty Levels:**
-  - 🟢 **Easy**: Nations and countries
-  - 🟠 **Medium**: Cities and urban locations  
-  - 🔴 **Hard**: Monuments and landmarks
+Global Enigma is an interactive geography puzzle game that challenges players to identify locations worldwide using progressive clues. The game combines educational value with entertainment, making geography learning engaging and fun.
 
-- **Progressive Clue System**: Reveal clues with point costs
-- **Interactive World Map**: Tap to place your guess
-- **Scoring System**: Distance penalty + bullseye bonus
-- **User Profile & Stats**: Track your progress locally
-- **Achievement System**: Unlock 8 different achievements
-- **Offline Play**: No internet connection required
+**Core Concept**: Players are presented with a mystery location and must use strategic clue revelation to narrow down their guess. Each clue costs points, creating a risk-reward dynamic that encourages critical thinking and geographical knowledge.
 
-## 🏗️ Built With
+**Key Innovation**: The progressive clue system allows players to choose their difficulty path - they can play conservatively with fewer clues or take risks for higher scores. The distance-based scoring system rewards precision while the achievement system provides long-term engagement.
 
-- **Flutter** - Cross-platform framework
-- **flutter_map** - Interactive map component
-- **SharedPreferences** - Local data storage
-- **Material Design 3** - Modern UI components
+**Educational Value**: Players naturally learn about world geography, landmarks, and cultural references through gameplay. The three difficulty levels (nations, cities, monuments) cater to different knowledge levels, making it accessible to both geography enthusiasts and casual learners.
 
-## 🚀 Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Flutter SDK (>=3.0.0)
 - For Android: Android SDK and Android Studio
 - For Web: Any modern web browser
 
-### Installation
+### Installation & Execution
 
-1. **Clone the repository**
+1. **Clone and setup**
    ```bash
    git clone <repository-url>
    cd GeoEnigma
-   ```
-
-2. **Install dependencies**
-   ```bash
    flutter pub get
    ```
 
-3. **Run the app**
-
-   **For Web:**
+2. **Run the application**
+   
+   **Web (Recommended for testing):**
    ```bash
-   flutter run -d chrome
+   flutter run -d chrome --web-port=8080
    ```
-
-   **For Android:**
+   Open: `http://localhost:8080`
+   
+   **Android:**
    ```bash
    flutter run
    ```
 
-## 📱 Cross-Platform Support
+3. **Build for production**
+   
+   **Web:**
+   ```bash
+   flutter build web --release
+   ```
+   
+   **Android APK:**
+   ```bash
+   flutter build apk --release
+   ```
 
-This app runs on both **Web** and **Android** from the same codebase:
+## 🎮 How to Play
 
-### Web App
-- ✅ Runs in any modern browser
-- ✅ Local storage via browser APIs
-- ✅ Responsive design
-- ✅ Touch and mouse support
-
-### Android App
-- ✅ Native Android performance
-- ✅ Local storage via SharedPreferences
-- ✅ Touch-optimized interface
-- ✅ Offline functionality
-
-## 🎯 How to Play
-
-1. **Choose Difficulty**: Select Easy, Medium, or Hard
-2. **Reveal Clues**: Use the dossier to reveal clues (costs points)
+1. **Select Difficulty**: Choose Easy (nations), Medium (cities), or Hard (monuments)
+2. **Reveal Clues**: Use the dossier to reveal clues - each costs points
 3. **Make Your Guess**: Tap on the world map to place your guess
-4. **Confirm**: Press "Confirm Guess" to see results
-5. **Track Progress**: View your stats and achievements in the profile
+4. **Confirm & Score**: See your results and final score
 
-## 🏆 Scoring System
+## 🎯 Game Features
 
-- **Starting Score**: 10,000 points
-- **Clue Costs**: Each clue subtracts points (varies by difficulty)
-- **Distance Penalty**: 2 points per kilometer from correct location
-- **Bullseye Bonus**: +500 points if within 25km of target
+- **Progressive Clue System**: Strategic clue revelation with point costs
+- **Interactive World Map**: Tap-to-guess interface with distance calculation
+- **Smart Scoring**: Distance penalty + bullseye bonus system
+- **User Profiles**: Local stats tracking and achievement system
+- **Cross-Platform**: Runs on Web and Android from single codebase
+- **Offline Play**: No internet connection required
+- **Modern UI**: Material Design 3 with dark mode support
+- **Sound Effects**: Audio feedback for enhanced experience
+- **Timer Mode**: Optional countdown timer for added challenge
 
-## 📊 User Profile Features
+## 🏗️ Technical Stack
 
-- **Overall Statistics**: Total games, best score, average score
-- **Difficulty Breakdown**: Stats for each difficulty level
-- **Achievement System**: 8 unlockable achievements
-- **Local Storage**: All data stored on device (no internet required)
+- **Flutter** - Cross-platform framework
+- **flutter_map** - Interactive map component with tile layers
+- **SharedPreferences** - Local data persistence
+- **Material Design 3** - Modern UI components
+- **Audio Players** - Sound effects and feedback
 
-## 🛠️ Development
+## 📱 Platform Support
 
-### Project Structure
-```
-lib/
-├── main.dart                 # App entry point
-├── models/                   # Data models
-│   ├── puzzle_model.dart    # Game puzzle data
-│   └── user_profile.dart    # User stats and achievements
-├── screens/                  # UI screens
-│   ├── start_screen.dart    # Difficulty selection
-│   ├── game_screen.dart     # Main game interface
-│   └── profile_screen.dart  # User profile and stats
-├── services/                 # Business logic
-│   ├── puzzle_service.dart  # Puzzle data management
-│   └── user_storage_service.dart # Local storage
-└── widgets/                  # Reusable UI components
-    ├── clue_dossier.dart    # Clue reveal interface
-    └── score_display.dart   # Score display widget
-```
+**Web App**: Runs in any modern browser with responsive design and touch/mouse support.
 
-### Building for Production
-
-**Web:**
-```bash
-flutter build web --release
-```
-
-**Android:**
-```bash
-flutter build apk --release
-```
+**Android App**: Native performance with offline functionality and touch-optimized interface.
 
 ## 🎨 Customization
 
-- **Puzzle Data**: Edit `assets/data/puzzles.json` to add/modify puzzles
-- **Achievements**: Modify `Achievements.all` in `user_profile.dart`
+- **Puzzle Data**: Edit `assets/data/puzzles.json` to add/modify locations
+- **Achievements**: Modify achievement system in `user_profile.dart`
 - **Scoring**: Adjust scoring logic in `game_screen.dart`
-- **UI Theme**: Customize colors and styling in `main.dart`
+- **UI Theme**: Customize colors and styling throughout the app
 
 ## 📄 License
 
 This project is part of a hackathon and is available for educational purposes.
-
-## 🤝 Contributing
-
-This is a hackathon project, but feel free to fork and improve!
 
 ---
 

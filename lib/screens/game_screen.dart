@@ -40,8 +40,6 @@ class _GameScreenState extends State<GameScreen> {
   bool _timerActive = false;
   bool _timerMode = false;
   
-  // Visual hints toggle
-  bool _showVisualHints = true; // Start with visual hints enabled
   
   // Dark mode toggle
   bool _isDarkMode = false;
@@ -486,19 +484,6 @@ class _GameScreenState extends State<GameScreen> {
           },
         ),
         actions: [
-          // Visual hints toggle
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _showVisualHints = !_showVisualHints;
-              });
-            },
-            icon: Icon(
-              _showVisualHints ? Icons.visibility : Icons.visibility_off,
-              color: _showVisualHints ? Colors.blue : Colors.grey,
-            ),
-            tooltip: _showVisualHints ? 'Hide Visual Hints' : 'Show Visual Hints',
-          ),
           // Dark mode toggle
           IconButton(
             onPressed: _toggleDarkMode,
@@ -746,10 +731,6 @@ class _GameScreenState extends State<GameScreen> {
             subdomains: const ['a', 'b', 'c', 'd'],
             userAgentPackageName: 'com.example.global_enigma',
           ),
-          // Distance circles for revealed distance clues (only if enabled)
-          if (_showVisualHints) ..._buildDistanceCircles(),
-          // Reference city markers for distance clues (only if enabled)
-          if (_showVisualHints) ..._buildReferenceCityMarkers(),
           // User guess marker
           if (_guessLocation != null)
             MarkerLayer(
@@ -875,116 +856,5 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
-  List<Clue> _getRevealedDistanceClues() {
-    if (_currentPuzzle == null) return [];
-    
-    List<Clue> revealedDistanceClues = [];
-    for (int i = 0; i < _currentPuzzle!.clues.length; i++) {
-      final clue = _currentPuzzle!.clues[i];
-      if (clue.type == 'distance' && _revealedClueIds.contains(i.toString())) {
-        revealedDistanceClues.add(clue);
-      }
-    }
-    print('Found ${revealedDistanceClues.length} revealed distance clues');
-    return revealedDistanceClues;
-  }
 
-  List<Widget> _buildDistanceCircles() {
-    final distanceClues = _getRevealedDistanceClues();
-    print('Building distance circles: ${distanceClues.length} clues found');
-    if (distanceClues.isEmpty) return [];
-
-    List<Widget> circles = [];
-    
-    for (final clue in distanceClues) {
-      if (clue.data != null && 
-          clue.data!['from_city_coords'] != null && 
-          clue.data!['value_km'] != null) {
-        
-        final coords = clue.data!['from_city_coords'] as Map<String, dynamic>;
-        final distanceKm = clue.data!['value_km'] as double;
-        final center = LatLng(coords['lat'] as double, coords['lon'] as double);
-        
-        // Convert km to meters for the circle radius, make it VERY visible
-        final radiusMeters = (distanceKm * 200).clamp(20000.0, 200000.0); // Min 20km, Max 200km radius
-        print('Creating circle: ${distanceKm}km from ${coords['lat']}, ${coords['lon']} with radius ${radiusMeters}m');
-        
-        circles.add(
-          CircleLayer(
-            circles: [
-              CircleMarker(
-                point: center,
-                radius: radiusMeters,
-                color: Colors.blue.withOpacity(0.4), // VERY visible
-                borderColor: Colors.blue.withOpacity(1.0),
-                borderStrokeWidth: 2.0,
-              ),
-            ],
-          ),
-        );
-      }
-    }
-    
-    return circles;
-  }
-
-  List<Widget> _buildReferenceCityMarkers() {
-    final distanceClues = _getRevealedDistanceClues();
-    if (distanceClues.isEmpty) return [];
-
-    List<Widget> markers = [];
-    
-    for (final clue in distanceClues) {
-      if (clue.data != null && clue.data!['from_city_coords'] != null) {
-        final coords = clue.data!['from_city_coords'] as Map<String, dynamic>;
-        final cityName = clue.data!['from_city'] as String;
-        final center = LatLng(coords['lat'] as double, coords['lon'] as double);
-        
-        markers.add(
-          MarkerLayer(
-            markers: [
-              Marker(
-                point: center,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white, width: 1),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 2,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.location_city, color: Colors.white, size: 12),
-                      const SizedBox(height: 1),
-                      Text(
-                        cityName,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 7,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    }
-    
-    return markers;
-  }
 }

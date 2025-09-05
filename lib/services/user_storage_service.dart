@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_profile.dart';
+import '../models/auth_models.dart';
+import 'auth_service.dart';
 
 class UserStorageService {
   static const String _userProfileKey = 'user_profile';
@@ -9,8 +11,14 @@ class UserStorageService {
   // Load user profile from local storage
   static Future<UserProfile> loadUserProfile() async {
     try {
+      final currentUser = await AuthService.getCurrentUser();
+      if (currentUser == null) {
+        throw Exception('No user logged in');
+      }
+
       final prefs = await SharedPreferences.getInstance();
-      final profileJson = prefs.getString(_userProfileKey);
+      final profileKey = AuthService.getUserProfileKey(currentUser.id);
+      final profileJson = prefs.getString(profileKey);
       
       if (profileJson != null) {
         final profileData = json.decode(profileJson) as Map<String, dynamic>;
@@ -18,6 +26,7 @@ class UserStorageService {
       } else {
         // Create new profile with default achievements
         final newProfile = UserProfile.empty().copyWith(
+          name: currentUser.username,
           achievements: Achievements.all,
         );
         await saveUserProfile(newProfile);
@@ -34,9 +43,15 @@ class UserStorageService {
   // Save user profile to local storage
   static Future<void> saveUserProfile(UserProfile profile) async {
     try {
+      final currentUser = await AuthService.getCurrentUser();
+      if (currentUser == null) {
+        throw Exception('No user logged in');
+      }
+
       final prefs = await SharedPreferences.getInstance();
+      final profileKey = AuthService.getUserProfileKey(currentUser.id);
       final profileJson = json.encode(profile.toJson());
-      await prefs.setString(_userProfileKey, profileJson);
+      await prefs.setString(profileKey, profileJson);
     } catch (e) {
       throw Exception('Failed to save user profile: $e');
     }
@@ -45,8 +60,16 @@ class UserStorageService {
   // Update user name
   static Future<void> updateUserName(String name) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_userNameKey, name);
+      final currentUser = await AuthService.getCurrentUser();
+      if (currentUser == null) {
+        throw Exception('No user logged in');
+      }
+
+      // Update username in auth service
+      final result = await AuthService.updateProfile(currentUser.id, username: name);
+      if (!result.success) {
+        throw Exception(result.message ?? 'Failed to update username');
+      }
       
       // Also update the profile
       final profile = await loadUserProfile();

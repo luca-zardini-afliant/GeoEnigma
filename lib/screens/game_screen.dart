@@ -92,12 +92,14 @@ class _GameScreenState extends State<GameScreen> {
 
     // Save game result to user profile
     try {
-      await UserStorageService.recordGameResult(
+      print('DEBUG: Recording game result - Score: $finalScore, Distance: $distance, Clues: ${_revealedClueIds.length}');
+      final updatedProfile = await UserStorageService.recordGameResult(
         difficulty: _currentDifficulty.name,
         score: finalScore,
         distance: distance,
         cluesUsed: _revealedClueIds.length,
       );
+      print('DEBUG: Game result recorded - Total games: ${updatedProfile.totalGamesPlayed}, Best score: ${updatedProfile.bestScore}');
     } catch (e) {
       // Log error but don't interrupt the game
       print('Error saving game result: $e');

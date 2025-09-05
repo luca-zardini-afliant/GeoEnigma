@@ -22,6 +22,13 @@ class _StartScreenState extends State<StartScreen> {
     _loadUserProfile();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload profile when returning to this screen
+    _loadUserProfile();
+  }
+
   Future<void> _loadUserProfile() async {
     try {
       final profile = await UserStorageService.loadUserProfile();
@@ -97,9 +104,7 @@ class _StartScreenState extends State<StartScreen> {
                             color: Colors.white70,
                           ),
                         ),
-                        const SizedBox(height: 32),
-                        if (_userProfile != null) _buildQuickStats(),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 48),
                         const Text(
                           'Choose Your Difficulty',
                           style: TextStyle(
@@ -216,47 +221,4 @@ class _StartScreenState extends State<StartScreen> {
     );
   }
 
-  Widget _buildQuickStats() {
-    if (_userProfile == null) return const SizedBox.shrink();
-    
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildStatItem('Games', _userProfile!.totalGamesPlayed.toString()),
-          _buildStatItem('Best Score', _userProfile!.bestScore.toString()),
-          _buildStatItem('Achievements', 
-            '${_userProfile!.achievements.where((a) => a.unlocked).length}/${_userProfile!.achievements.length}'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatItem(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.white70,
-          ),
-        ),
-      ],
-    );
-  }
 }

@@ -161,6 +161,26 @@ class AuthService {
     }
   }
 
+  // Login as guest (for testing/development)
+  static Future<AuthResult> loginAsGuest() async {
+    try {
+      final guestUser = User(
+        id: 'guest_${DateTime.now().millisecondsSinceEpoch}',
+        username: 'Guest Player',
+        email: 'guest@example.com',
+        createdAt: DateTime.now(),
+        lastLogin: DateTime.now(),
+      );
+
+      // Set as current user
+      await _setCurrentUser(guestUser);
+
+      return AuthResult.success(guestUser);
+    } catch (e) {
+      return AuthResult.failure('Failed to login as guest: $e');
+    }
+  }
+
   // Check if user is logged in
   static Future<bool> isLoggedIn() async {
     final currentUser = await getCurrentUser();

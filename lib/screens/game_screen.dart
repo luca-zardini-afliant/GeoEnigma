@@ -108,7 +108,7 @@ class _GameScreenState extends State<GameScreen> {
       
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('🗺️ Distance hint revealed! Look for the blue circle around $cityName (${distance.toInt()} km radius)'),
+          content: Text('🗺️ Distance hint revealed! The target is ${distance.toInt()} km from $cityName'),
           duration: const Duration(seconds: 4),
           backgroundColor: Colors.blue,
           behavior: SnackBarBehavior.floating,

@@ -878,10 +878,15 @@ class _GameScreenState extends State<GameScreen> {
   List<Clue> _getRevealedDistanceClues() {
     if (_currentPuzzle == null) return [];
     
-    return _currentPuzzle!.clues.where((clue) {
-      return clue.type == 'distance' && 
-             _revealedClueIds.contains(_currentPuzzle!.clues.indexOf(clue).toString());
-    }).toList();
+    List<Clue> revealedDistanceClues = [];
+    for (int i = 0; i < _currentPuzzle!.clues.length; i++) {
+      final clue = _currentPuzzle!.clues[i];
+      if (clue.type == 'distance' && _revealedClueIds.contains(i.toString())) {
+        revealedDistanceClues.add(clue);
+      }
+    }
+    print('Found ${revealedDistanceClues.length} revealed distance clues');
+    return revealedDistanceClues;
   }
 
   List<Widget> _buildDistanceCircles() {
@@ -900,8 +905,8 @@ class _GameScreenState extends State<GameScreen> {
         final distanceKm = clue.data!['value_km'] as double;
         final center = LatLng(coords['lat'] as double, coords['lon'] as double);
         
-        // Convert km to meters for the circle radius, make it more visible
-        final radiusMeters = (distanceKm * 100).clamp(10000.0, 100000.0); // Min 10km, Max 100km radius
+        // Convert km to meters for the circle radius, make it VERY visible
+        final radiusMeters = (distanceKm * 200).clamp(20000.0, 200000.0); // Min 20km, Max 200km radius
         print('Creating circle: ${distanceKm}km from ${coords['lat']}, ${coords['lon']} with radius ${radiusMeters}m');
         
         circles.add(
@@ -910,8 +915,8 @@ class _GameScreenState extends State<GameScreen> {
               CircleMarker(
                 point: center,
                 radius: radiusMeters,
-                color: Colors.blue.withOpacity(0.2), // More visible
-                borderColor: Colors.blue.withOpacity(0.8),
+                color: Colors.blue.withOpacity(0.4), // VERY visible
+                borderColor: Colors.blue.withOpacity(1.0),
                 borderStrokeWidth: 2.0,
               ),
             ],

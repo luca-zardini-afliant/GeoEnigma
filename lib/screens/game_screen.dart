@@ -39,6 +39,9 @@ class _GameScreenState extends State<GameScreen> {
   int _timeRemaining = 300; // 5 minutes in seconds
   bool _timerActive = false;
   bool _timerMode = false;
+  
+  // Visual hints toggle
+  bool _showVisualHints = true;
 
   @override
   void initState() {
@@ -470,6 +473,19 @@ class _GameScreenState extends State<GameScreen> {
           },
         ),
         actions: [
+          // Visual hints toggle
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _showVisualHints = !_showVisualHints;
+              });
+            },
+            icon: Icon(
+              _showVisualHints ? Icons.visibility : Icons.visibility_off,
+              color: _showVisualHints ? Colors.blue : Colors.grey,
+            ),
+            tooltip: _showVisualHints ? 'Hide Visual Hints' : 'Show Visual Hints',
+          ),
           // Timer display
           if (_timerMode)
             Container(
@@ -705,10 +721,10 @@ class _GameScreenState extends State<GameScreen> {
             subdomains: const ['a', 'b', 'c', 'd'],
             userAgentPackageName: 'com.example.global_enigma',
           ),
-          // Distance circles for revealed distance clues
-          ..._buildDistanceCircles(),
-          // Reference city markers for distance clues
-          ..._buildReferenceCityMarkers(),
+          // Distance circles for revealed distance clues (only if enabled)
+          if (_showVisualHints) ..._buildDistanceCircles(),
+          // Reference city markers for distance clues (only if enabled)
+          if (_showVisualHints) ..._buildReferenceCityMarkers(),
           // User guess marker
           if (_guessLocation != null)
             MarkerLayer(
@@ -754,6 +770,9 @@ class _GameScreenState extends State<GameScreen> {
   LatLng _getSmartInitialCenter() {
     if (_currentPuzzle == null) return const LatLng(20.0, 0.0);
     
+    // Only use smart centering if visual hints are enabled
+    if (!_showVisualHints) return const LatLng(20.0, 0.0);
+    
     // If we have distance clues revealed, center on the reference cities
     final distanceClues = _getRevealedDistanceClues();
     if (distanceClues.isNotEmpty) {
@@ -782,6 +801,19 @@ class _GameScreenState extends State<GameScreen> {
   double _getSmartInitialZoom() {
     if (_currentPuzzle == null) return 2.0;
     
+    // Only use smart zoom if visual hints are enabled
+    if (!_showVisualHints) {
+      // Default zoom based on difficulty - more conservative
+      switch (_currentDifficulty) {
+        case Difficulty.easy:
+          return 2.5;  // Continental level
+        case Difficulty.medium:
+          return 3.0;  // Country level
+        case Difficulty.hard:
+          return 4.0;  // Regional level
+      }
+    }
+    
     final distanceClues = _getRevealedDistanceClues();
     if (distanceClues.isNotEmpty) {
       // Calculate average distance to determine zoom level
@@ -798,24 +830,23 @@ class _GameScreenState extends State<GameScreen> {
       if (count > 0) {
         final avgDistance = totalDistance / count;
         
-        // Smart zoom based on average distance
-        if (avgDistance < 50) return 8.0;      // Very close - city level
-        if (avgDistance < 200) return 6.0;     // Close - regional level
-        if (avgDistance < 500) return 5.0;     // Medium - country level
-        if (avgDistance < 1000) return 4.0;    // Far - continental level
-        if (avgDistance < 3000) return 3.0;    // Very far - continental level
+        // More conservative smart zoom based on average distance
+        if (avgDistance < 100) return 6.0;     // Close - regional level
+        if (avgDistance < 500) return 4.0;     // Medium - country level
+        if (avgDistance < 1000) return 3.0;    // Far - continental level
+        if (avgDistance < 3000) return 2.5;    // Very far - continental level
         return 2.0;                            // Global level
       }
     }
     
-    // Default zoom based on difficulty
+    // Default zoom based on difficulty - more conservative
     switch (_currentDifficulty) {
       case Difficulty.easy:
-        return 3.0;  // Country level
+        return 2.5;  // Continental level
       case Difficulty.medium:
-        return 4.0;  // Regional level
+        return 3.0;  // Country level
       case Difficulty.hard:
-        return 5.0;  // City level
+        return 4.0;  // Regional level
     }
   }
 
@@ -843,8 +874,8 @@ class _GameScreenState extends State<GameScreen> {
         final distanceKm = clue.data!['value_km'] as double;
         final center = LatLng(coords['lat'] as double, coords['lon'] as double);
         
-        // Convert km to meters for the circle radius
-        final radiusMeters = distanceKm * 1000;
+        // Convert km to meters for the circle radius, but limit the size
+        final radiusMeters = (distanceKm * 1000).clamp(1000, 1000000); // Min 1km, Max 1000km radius
         
         circles.add(
           CircleLayer(
@@ -852,9 +883,9 @@ class _GameScreenState extends State<GameScreen> {
               CircleMarker(
                 point: center,
                 radius: radiusMeters,
-                color: Colors.blue.withOpacity(0.3),
-                borderColor: Colors.blue.withOpacity(0.8),
-                borderStrokeWidth: 2.0,
+                color: Colors.blue.withOpacity(0.1), // Much more transparent
+                borderColor: Colors.blue.withOpacity(0.6),
+                borderStrokeWidth: 3.0,
               ),
             ],
           ),

@@ -780,4 +780,15 @@ class _GameScreenState extends State<GameScreen> {
     return _getDifficultyZoomLevel();
   }
 
+  double _getDifficultyZoomLevel() {
+    switch (_currentDifficulty) {
+      case Difficulty.easy:
+        return 2.5;  // Continental level
+      case Difficulty.medium:
+        return 3.0;  // Country level
+      case Difficulty.hard:
+        return 4.0;  // Regional level
+    }
+  }
+
 }

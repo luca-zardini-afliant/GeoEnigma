@@ -41,7 +41,7 @@ class _GameScreenState extends State<GameScreen> {
   bool _timerMode = false;
   
   // Visual hints toggle
-  bool _showVisualHints = false; // Start with visual hints disabled
+  bool _showVisualHints = true; // Start with visual hints enabled
 
   @override
   void initState() {
@@ -875,7 +875,7 @@ class _GameScreenState extends State<GameScreen> {
         final center = LatLng(coords['lat'] as double, coords['lon'] as double);
         
         // Convert km to meters for the circle radius, but limit the size
-        final radiusMeters = (distanceKm * 1000).clamp(1000.0, 1000000.0); // Min 1km, Max 1000km radius
+        final radiusMeters = (distanceKm * 1000).clamp(10000.0, 500000.0); // Min 10km, Max 500km radius
         
         circles.add(
           CircleLayer(
@@ -883,9 +883,9 @@ class _GameScreenState extends State<GameScreen> {
               CircleMarker(
                 point: center,
                 radius: radiusMeters,
-                color: Colors.blue.withOpacity(0.1), // Much more transparent
-                borderColor: Colors.blue.withOpacity(0.6),
-                borderStrokeWidth: 3.0,
+                color: Colors.blue.withOpacity(0.15), // Slightly more visible
+                borderColor: Colors.blue.withOpacity(0.7),
+                borderStrokeWidth: 2.0,
               ),
             ],
           ),

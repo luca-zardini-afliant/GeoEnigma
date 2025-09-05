@@ -166,27 +166,101 @@ class ClueDossier extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
-              child: Image.asset(
-                imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.grey.shade200,
-                    child: const Center(
-                      child: Icon(
-                        Icons.flag,
-                        color: Colors.grey,
-                        size: 24,
-                      ),
-                    ),
-                  );
-                },
-              ),
+              child: _buildFlagPlaceholder(imageUrl),
             ),
           ),
         ],
       ],
     );
+  }
+
+  Widget _buildFlagPlaceholder(String imageUrl) {
+    // Create colored flag placeholders based on the URL
+    if (imageUrl.contains('turkey.png')) {
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFE30A17), Color(0xFFFFFFFF)],
+            stops: [0.0, 1.0],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.flag,
+            color: Color(0xFFE30A17),
+            size: 20,
+          ),
+        ),
+      );
+    } else if (imageUrl.contains('france.png')) {
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF002395), Color(0xFFFFFFFF), Color(0xFFED2939)],
+            stops: [0.0, 0.5, 1.0],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.flag,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+      );
+    } else if (imageUrl.contains('australia.png')) {
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF00008B), Color(0xFFFFFFFF), Color(0xFFFF0000)],
+            stops: [0.0, 0.5, 1.0],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.flag,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+      );
+    } else if (imageUrl.contains('uae.png')) {
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF00732F), Color(0xFFFFFFFF), Color(0xFF000000), Color(0xFFFF0000)],
+            stops: [0.0, 0.25, 0.5, 1.0],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.flag,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+      );
+    } else {
+      // Default fallback for other flags
+      return Container(
+        color: Colors.grey.shade200,
+        child: const Center(
+          child: Icon(
+            Icons.flag,
+            color: Colors.grey,
+            size: 24,
+          ),
+        ),
+      );
+    }
   }
 
   Widget _buildDistanceClue(Clue clue) {

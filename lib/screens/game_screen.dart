@@ -875,7 +875,7 @@ class _GameScreenState extends State<GameScreen> {
         final center = LatLng(coords['lat'] as double, coords['lon'] as double);
         
         // Convert km to meters for the circle radius, but make it much smaller for visibility
-        final radiusMeters = (distanceKm * 100).clamp(5000.0, 100000.0); // Min 5km, Max 100km radius
+        final radiusMeters = (distanceKm * 50).clamp(2000.0, 50000.0); // Min 2km, Max 50km radius
         
         circles.add(
           CircleLayer(
@@ -883,8 +883,8 @@ class _GameScreenState extends State<GameScreen> {
               CircleMarker(
                 point: center,
                 radius: radiusMeters,
-                color: Colors.blue.withOpacity(0.1), // More subtle
-                borderColor: Colors.blue.withOpacity(0.5),
+                color: Colors.blue.withOpacity(0.05), // Very subtle
+                borderColor: Colors.blue.withOpacity(0.3),
                 borderStrokeWidth: 2.0,
               ),
             ],
@@ -914,29 +914,29 @@ class _GameScreenState extends State<GameScreen> {
               Marker(
                 point: center,
                 child: Container(
-                  padding: const EdgeInsets.all(4),
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: Colors.blue,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white, width: 1),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 2,
+                        offset: const Offset(0, 1),
                       ),
                     ],
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.location_city, color: Colors.white, size: 16),
-                      const SizedBox(height: 2),
+                      const Icon(Icons.location_city, color: Colors.white, size: 12),
+                      const SizedBox(height: 1),
                       Text(
                         cityName,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 8,
+                          fontSize: 7,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,

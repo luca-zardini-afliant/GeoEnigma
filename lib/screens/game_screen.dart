@@ -42,6 +42,9 @@ class _GameScreenState extends State<GameScreen> {
   
   // Visual hints toggle
   bool _showVisualHints = true; // Start with visual hints enabled
+  
+  // Dark mode toggle
+  bool _isDarkMode = false;
 
   @override
   void initState() {
@@ -131,6 +134,14 @@ class _GameScreenState extends State<GameScreen> {
     SoundService.playClickSound();
     setState(() {
       _isHintsDrawerOpen = !_isHintsDrawerOpen;
+    });
+  }
+
+  void _toggleDarkMode() {
+    // Play click sound for dark mode toggle
+    SoundService.playClickSound();
+    setState(() {
+      _isDarkMode = !_isDarkMode;
     });
   }
 
@@ -462,8 +473,10 @@ class _GameScreenState extends State<GameScreen> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
+    return Theme(
+      data: _isDarkMode ? ThemeData.dark() : ThemeData.light(),
+      child: Scaffold(
+        appBar: AppBar(
         title: const Text('Global Enigma'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         leading: IconButton(
@@ -485,6 +498,15 @@ class _GameScreenState extends State<GameScreen> {
               color: _showVisualHints ? Colors.blue : Colors.grey,
             ),
             tooltip: _showVisualHints ? 'Hide Visual Hints' : 'Show Visual Hints',
+          ),
+          // Dark mode toggle
+          IconButton(
+            onPressed: _toggleDarkMode,
+            icon: Icon(
+              _isDarkMode ? Icons.dark_mode : Icons.light_mode,
+              color: _isDarkMode ? Colors.orange : Colors.grey,
+            ),
+            tooltip: _isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode',
           ),
           // Timer display
           if (_timerMode)
@@ -570,6 +592,7 @@ class _GameScreenState extends State<GameScreen> {
             child: const Icon(Icons.person),
             tooltip: 'View Profile',
           ),
+      ),
     );
   }
 

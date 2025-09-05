@@ -875,7 +875,7 @@ class _GameScreenState extends State<GameScreen> {
         final center = LatLng(coords['lat'] as double, coords['lon'] as double);
         
         // Convert km to meters for the circle radius, but limit the size
-        final radiusMeters = (distanceKm * 1000).clamp(1000, 1000000); // Min 1km, Max 1000km radius
+        final radiusMeters = (distanceKm * 1000).clamp(1000.0, 1000000.0); // Min 1km, Max 1000km radius
         
         circles.add(
           CircleLayer(

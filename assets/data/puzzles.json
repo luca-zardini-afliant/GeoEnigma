@@ -1,0 +1,261 @@
+[
+  {
+    "id": "1",
+    "level": "easy",
+    "category": "Nation",
+    "solution": { "name": "Italy", "lat": 41.9028, "lon": 12.4964 },
+    "clues": [
+      { "cost": -1000, "type": "attribute", "text": "It hosts Vatican City, the smallest state in the world." },
+      { "cost": -800, "type": "attribute", "text": "Its capital is known as 'The Eternal City'." },
+      { "cost": -600, "type": "attribute", "text": "Leonardo da Vinci is one of its most celebrated personalities." },
+      { "cost": -400, "type": "attribute", "text": "Its largest island is Sicily." }
+    ]
+  },
+  {
+    "id": "2",
+    "level": "easy",
+    "category": "Nation",
+    "solution": { "name": "Japan", "lat": 35.6895, "lon": 139.6917 },
+    "clues": [
+      { "cost": -1000, "type": "attribute", "text": "Its capital is Tokyo." },
+      { "cost": -700, "type": "attribute", "text": "It is known as the 'Land of the Rising Sun'." },
+      { "cost": -600, "type": "attribute", "text": "Mount Fuji is its most iconic volcano and mountain." },
+      { "cost": -500, "type": "attribute", "text": "It is the country of origin of manga and anime." }
+    ]
+  },
+  {
+    "id": "3",
+    "level": "easy",
+    "category": "Nation",
+    "solution": { "name": "Egypt", "lat": 30.0444, "lon": 31.2357 },
+    "clues": [
+      { "cost": -1000, "type": "attribute", "text": "It is famous for the Pyramids of Giza." },
+      { "cost": -800, "type": "attribute", "text": "It is crossed by the Nile River." },
+      { "cost": -600, "type": "attribute", "text": "Its ancient history is linked to the figure of the Pharaohs." },
+      { "cost": -400, "type": "attribute", "text": "It controls the Suez Canal, an important maritime route." }
+    ]
+  },
+  {
+    "id": "4",
+    "level": "medium",
+    "category": "City",
+    "solution": { "name": "Paris", "lat": 48.8566, "lon": 2.3522 },
+    "clues": [
+      { "cost": -900, "type": "image", "text": "Flag of the Host Nation", "data": { "url": "assets/flags/france.png" } },
+      { "cost": -700, "type": "attribute", "text": "It is crossed by the Seine River." },
+      { "cost": -600, "type": "distance", "text": "It is located about 344 km from London.", "data": { "from_city": "London", "value_km": 344, "from_city_coords": {"lat": 51.5072, "lon": -0.1276} } },
+      { "cost": -500, "type": "distance", "text": "It is about 878 km from Berlin.", "data": { "from_city": "Berlin", "value_km": 878, "from_city_coords": {"lat": 52.5200, "lon": 13.4050} } },
+      { "cost": -400, "type": "attribute", "text": "It hosts the Roland Garros tennis tournament." }
+    ]
+  },
+  {
+    "id": "5",
+    "level": "medium",
+    "category": "City",
+    "solution": { "name": "Monaco", "lat": 43.7384, "lon": 7.4246 },
+    "clues": [
+      { "cost": -900, "type": "image", "text": "Flag of the Host Nation", "data": { "url": "assets/flags/monaco.png" } },
+      { "cost": -700, "type": "attribute", "text": "It is famous for its Casino and the Monte Carlo district." },
+      { "cost": -600, "type": "attribute", "text": "It hosts one of the most famous city circuits in Formula 1." },
+      { "cost": -500, "type": "distance", "text": "It is located about 13 km from Nice, France.", "data": { "from_city": "Nice", "value_km": 13, "from_city_coords": {"lat": 43.7102, "lon": 7.2620} } },
+      { "cost": -400, "type": "attribute", "text": "It is one of the smallest and most densely populated nations in the world." }
+    ]
+  },
+  {
+    "id": "6",
+    "level": "medium",
+    "category": "City",
+    "solution": { "name": "Rio de Janeiro", "lat": -22.9068, "lon": -43.1729 },
+    "clues": [
+      { "cost": -900, "type": "image", "text": "Flag of the Host Nation", "data": { "url": "assets/flags/brazil.png" } },
+      { "cost": -800, "type": "attribute", "text": "It is famous for its Carnival." },
+      { "cost": -600, "type": "attribute", "text": "It hosts the iconic Maracanã football stadium." },
+      { "cost": -500, "type": "attribute", "text": "It was the capital of Brazil until 1960." },
+      { "cost": -400, "type": "attribute", "text": "The Christ the Redeemer statue dominates its landscape." }
+    ]
+  },
+  {
+    "id": "7",
+    "level": "hard",
+    "category": "Monument",
+    "solution": { "name": "Colosseum", "lat": 41.8902, "lon": 12.4922 },
+    "clues": [
+      { "cost": -800, "type": "attribute", "text": "Type: Amphitheater." },
+      { "cost": -600, "type": "attribute", "text": "It is located in the city of Rome, Italy." },
+      { "cost": -400, "type": "attribute", "text": "It was used for gladiator shows and venationes." },
+      { "cost": -300, "type": "attribute", "text": "Its construction was started by Emperor Vespasian in the year 72 AD." }
+    ]
+  },
+  {
+    "id": "8",
+    "level": "hard",
+    "category": "Monument",
+    "solution": { "name": "Statue of Liberty", "lat": 40.6892, "lon": -74.0445 },
+    "clues": [
+      { "cost": -800, "type": "attribute", "text": "Type: Colossal statue." },
+      { "cost": -600, "type": "attribute", "text": "It is located on Liberty Island, in New York, USA." },
+      { "cost": -400, "type": "attribute", "text": "It was a gift from France to the United States in 1886." },
+      { "cost": -300, "type": "attribute", "text": "Its crown has seven points, representing the seven seas and continents." }
+    ]
+  },
+  {
+    "id": "9",
+    "level": "hard",
+    "category": "Monument",
+    "solution": { "name": "Machu Picchu", "lat": -13.1631, "lon": -72.5450 },
+    "clues": [
+      { "cost": -800, "type": "attribute", "text": "Type: Inca citadel." },
+      { "cost": -600, "type": "attribute", "text": "It is located in Peru, on the Andes mountain range." },
+      { "cost": -400, "type": "attribute", "text": "It is known as the 'Lost City of the Incas'." },
+      { "cost": -300, "type": "attribute", "text": "It was rediscovered by explorer Hiram Bingham in 1911." }
+    ]
+  },
+  {
+    "id": "10",
+    "level": "easy",
+    "category": "Nation",
+    "solution": { "name": "Canada", "lat": 45.4215, "lon": -75.6972 },
+    "clues": [
+      { "cost": -1000, "type": "attribute", "text": "Its capital is Ottawa." },
+      { "cost": -800, "type": "attribute", "text": "It has two official languages: English and French." },
+      { "cost": -600, "type": "image", "text": "Its flag shows a red maple leaf.", "data": { "url": "assets/flags/canada.png" } },
+      { "cost": -400, "type": "attribute", "text": "It is the second largest country in the world after Russia." }
+    ]
+  },
+  {
+    "id": "11",
+    "level": "medium",
+    "category": "City",
+    "solution": { "name": "Sydney", "lat": -33.8688, "lon": 151.2093 },
+    "clues": [
+      { "cost": -900, "type": "image", "text": "Flag of the Host Nation", "data": { "url": "assets/flags/australia.png" } },
+      { "cost": -700, "type": "attribute", "text": "It is not the capital of its nation, but it is its most populous city." },
+      { "cost": -600, "type": "attribute", "text": "It is famous for its Opera House with the shell-shaped roof." },
+      { "cost": -500, "type": "distance", "text": "It is about 840 km from Brisbane.", "data": { "from_city": "Brisbane", "value_km": 840, "from_city_coords": {"lat": -27.4698, "lon": 153.0251} } },
+      { "cost": -400, "type": "attribute", "text": "It hosted the 2000 Summer Olympics." }
+    ]
+  },
+  {
+    "id": "12",
+    "level": "hard",
+    "category": "Monument",
+    "solution": { "name": "Petra", "lat": 30.3285, "lon": 35.4444 },
+    "clues": [
+      { "cost": -800, "type": "attribute", "text": "Type: Ancient rock-cut city." },
+      { "cost": -600, "type": "attribute", "text": "It is located in present-day Jordan." },
+      { "cost": -400, "type": "attribute", "text": "It is famous for the Treasury (Al-Khazneh), an imposing facade carved into the rock." },
+      { "cost": -300, "type": "attribute", "text": "It was used as a location for the movie 'Indiana Jones and the Last Crusade'." }
+    ]
+  },
+  {
+    "id": "13",
+    "level": "easy",
+    "category": "Nation",
+    "solution": { "name": "Australia", "lat": -35.2809, "lon": 149.1300 },
+    "clues": [
+        { "cost": -1000, "type": "attribute", "text": "It is both a nation and a continent." },
+        { "cost": -800, "type": "attribute", "text": "Its capital is Canberra." },
+        { "cost": -600, "type": "attribute", "text": "It is famous for the Great Barrier Reef." },
+        { "cost": -400, "type": "attribute", "text": "The kangaroo and koala are some of its symbolic animals." }
+    ]
+  },
+  {
+    "id": "14",
+    "level": "medium",
+    "category": "City",
+    "solution": { "name": "Istanbul", "lat": 41.0082, "lon": 28.9784 },
+    "clues": [
+        { "cost": -900, "type": "image", "text": "Flag of the Host Nation", "data": { "url": "assets/flags/turkey.png" } },
+        { "cost": -700, "type": "attribute", "text": "It is the only city in the world to be located on two continents (Europe and Asia)." },
+        { "cost": -600, "type": "attribute", "text": "In the past it was known as Byzantium and Constantinople." },
+        { "cost": -500, "type": "distance", "text": "It is about 550 km from Athens.", "data": { "from_city": "Athens", "value_km": 550, "from_city_coords": {"lat": 37.9838, "lon": 23.7275} } },
+        { "cost": -400, "type": "attribute", "text": "It is crossed by the Bosphorus Strait." }
+    ]
+  },
+  {
+    "id": "15",
+    "level": "hard",
+    "category": "Monument",
+    "solution": { "name": "Great Wall of China", "lat": 40.4319, "lon": 116.5704 },
+    "clues": [
+        { "cost": -800, "type": "attribute", "text": "Type: Series of military fortifications." },
+        { "cost": -600, "type": "attribute", "text": "It is located in northern China." },
+        { "cost": -400, "type": "attribute", "text": "It was built to protect imperial borders from nomadic people invasions." },
+        { "cost": -300, "type": "attribute", "text": "Contrary to popular belief, it is not visible to the naked eye from space." }
+    ]
+  },
+  {
+    "id": "16",
+    "level": "easy",
+    "category": "Nation",
+    "solution": { "name": "Spain", "lat": 40.4168, "lon": -3.7038 },
+    "clues": [
+        { "cost": -1000, "type": "attribute", "text": "Its capital is Madrid." },
+        { "cost": -800, "type": "attribute", "text": "It includes the Balearic Islands and the Canary Islands." },
+        { "cost": -600, "type": "attribute", "text": "It is famous for the Sagrada Familia, designed by Gaudí." },
+        { "cost": -400, "type": "attribute", "text": "Paella is one of its most well-known national dishes." }
+    ]
+  },
+  {
+    "id": "17",
+    "level": "easy",
+    "category": "Nation",
+    "solution": { "name": "India", "lat": 28.6139, "lon": 77.2090 },
+    "clues": [
+        { "cost": -1000, "type": "attribute", "text": "It is the second most populous country in the world." },
+        { "cost": -800, "type": "attribute", "text": "Its film industry is known as Bollywood." },
+        { "cost": -600, "type": "attribute", "text": "The Ganges is its most sacred river." },
+        { "cost": -400, "type": "attribute", "text": "The Taj Mahal is its most famous monument." }
+    ]
+  },
+  {
+    "id": "18",
+    "level": "medium",
+    "category": "City",
+    "solution": { "name": "Dubai", "lat": 25.2048, "lon": 55.2708 },
+    "clues": [
+        { "cost": -900, "type": "image", "text": "Flag of the Host Nation", "data": { "url": "assets/flags/uae.png" } },
+        { "cost": -700, "type": "attribute", "text": "It hosts the Burj Khalifa, the tallest building in the world." },
+        { "cost": -600, "type": "attribute", "text": "It is located in the United Arab Emirates." },
+        { "cost": -500, "type": "distance", "text": "It is about 120 km from Abu Dhabi.", "data": { "from_city": "Abu Dhabi", "value_km": 120, "from_city_coords": {"lat": 24.4539, "lon": 54.3773} } },
+        { "cost": -400, "type": "attribute", "text": "It is known for its artificial islands in the shape of palm trees." }
+    ]
+  },
+  {
+    "id": "19",
+    "level": "medium",
+    "category": "City",
+    "solution": { "name": "Amsterdam", "lat": 52.3676, "lon": 4.9041 },
+    "clues": [
+        { "cost": -900, "type": "image", "text": "Flag of the Host Nation", "data": { "url": "assets/flags/netherlands.png" } },
+        { "cost": -700, "type": "attribute", "text": "It is the capital of the Netherlands." },
+        { "cost": -600, "type": "attribute", "text": "It is famous for its canals, narrow houses and bicycles." },
+        { "cost": -500, "type": "distance", "text": "It is about 175 km from Brussels.", "data": { "from_city": "Brussels", "value_km": 175, "from_city_coords": {"lat": 50.8503, "lon": 4.3517} } },
+        { "cost": -400, "type": "attribute", "text": "It hosts the Vincent van Gogh museum." }
+    ]
+  },
+  {
+    "id": "20",
+    "level": "hard",
+    "category": "Monument",
+    "solution": { "name": "Angkor Wat", "lat": 13.4125, "lon": 103.8667 },
+    "clues": [
+        { "cost": -800, "type": "attribute", "text": "Type: Hindu-Buddhist temple." },
+        { "cost": -600, "type": "attribute", "text": "It is located in Cambodia." },
+        { "cost": -400, "type": "attribute", "text": "It is the largest religious monument in the world." },
+        { "cost": -300, "type": "attribute", "text": "Its image appears on the national flag of its country." }
+    ]
+  },
+  {
+    "id": "21",
+    "level": "hard",
+    "category": "Monument",
+    "solution": { "name": "Stonehenge", "lat": 51.1789, "lon": -1.8262 },
+    "clues": [
+        { "cost": -800, "type": "attribute", "text": "Type: Cromlech (stone circle)." },
+        { "cost": -600, "type": "attribute", "text": "It is located in England, in Wiltshire county." },
+        { "cost": -400, "type": "attribute", "text": "It is a prehistoric monument dating back to the Neolithic period." },
+        { "cost": -300, "type": "attribute", "text": "It is aligned with the summer and winter solstice." }
+    ]
+  }
+]

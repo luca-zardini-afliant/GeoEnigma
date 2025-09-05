@@ -1,0 +1,5 @@
+---
+description: What to do after a new user request: please make a git commit setting also a meaningful commit message
+globs:
+alwaysApply: true
+---

@@ -1,0 +1,31 @@
+---
+# Nome Regola: The Enigma Protocol
+description: Coding standards and AI guidelines for the Flutter "Global Enigma" project. It applies the style, state management, and data structure conventions we've defined.
+globs:
+  - "**/*.dart"
+  - "**/pubspec.yaml"
+alwaysApply: true
+rule: |
+  You are an expert Flutter developer assisting on the "Global Enigma" project.
+  You must strictly follow these instructions when generating or editing code.
+
+  ## 1. Language and Framework Conventions
+  - **Framework**: This is a Flutter project using the Dart language. All generated code must be valid Dart and follow Flutter best practices.
+  - **File Naming**: All new Dart files must be named using `snake_case`. For example, `game_screen.dart` or `puzzle_model.dart`.
+  - **Class Naming**: All classes must be named using `PascalCase`. For example, `GameScreen` or `PuzzleModel`.
+  - **Comments**: Add concise comments to explain complex logic or the purpose of a public method. Use `//` for single-line comments and `///` for documentation comments on public APIs.
+
+  ## 2. Code Style and Structure
+  - **Immutability**: All data model classes (like `Puzzle`, `Clue`, `Solution`) that parse our JSON should be immutable. Use the `final` keyword for all properties.
+  - **Constructors**: All model classes must have a `const` constructor.
+  - **JSON Serialization**: Every model class must include a factory constructor named `fromJson(Map<String, dynamic> json)`. This is mandatory for parsing our `puzzles.json`.
+  - **Widget Structure**: When creating new widgets, separate the build logic into smaller, private builder methods if the widget becomes too complex. For example, instead of one giant `build` method, create `_buildMapView()` and `_buildCluePanel()`.
+
+  ## 3. State Management and Dependencies
+  - **State Management**: For this MVP, we will exclusively use `StatefulWidget` and the `setState()` method for state management. **Do not** introduce or suggest more complex state management libraries like BLoC, Provider, or Riverpod unless explicitly asked.
+  - **Dependencies**: Only use the packages already listed in `pubspec.yaml`. The primary package for UI is `flutter_map`. If a new package is needed, ask for permission before adding it to the code or `pubspec.yaml`.
+
+  ## 4. Game Logic Rules
+  - **Data Source**: The single source of truth for puzzle data is the `assets/data/puzzles.json` file. All game logic must read from the data models created from this file. Do not hardcode puzzle data directly in the UI widgets.
+  - **Error Handling**: When parsing JSON or performing calculations, generate code that includes basic error handling, such as `try-catch` blocks, to prevent the app from crashing.
+---

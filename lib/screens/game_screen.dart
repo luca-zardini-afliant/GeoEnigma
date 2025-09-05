@@ -719,8 +719,8 @@ class _GameScreenState extends State<GameScreen> {
       margin: const EdgeInsets.all(8.0),
       child: FlutterMap(
         options: MapOptions(
-          initialCenter: _getSmartInitialCenter(),
-          initialZoom: _getSmartInitialZoom(),
+          initialCenter: _getInitialMapCenter(),
+          initialZoom: _getInitialZoomLevel(),
           onTap: _onMapTap,
         ),
         children: [
@@ -772,89 +772,12 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
-  // Smart zoom and center calculation based on revealed clues
-  LatLng _getSmartInitialCenter() {
-    if (_currentPuzzle == null) return const LatLng(20.0, 0.0);
-    
-    // Only use smart centering if visual hints are enabled
-    if (!_showVisualHints) return const LatLng(20.0, 0.0);
-    
-    // If we have distance clues revealed, center on the reference cities
-    final distanceClues = _getRevealedDistanceClues();
-    if (distanceClues.isNotEmpty) {
-      double totalLat = 0;
-      double totalLon = 0;
-      int count = 0;
-      
-      for (final clue in distanceClues) {
-        if (clue.data != null && clue.data!['from_city_coords'] != null) {
-          final coords = clue.data!['from_city_coords'] as Map<String, dynamic>;
-          totalLat += coords['lat'] as double;
-          totalLon += coords['lon'] as double;
-          count++;
-        }
-      }
-      
-      if (count > 0) {
-        return LatLng(totalLat / count, totalLon / count);
-      }
-    }
-    
-    // Default center
+  LatLng _getInitialMapCenter() {
     return const LatLng(20.0, 0.0);
   }
 
-  double _getSmartInitialZoom() {
-    if (_currentPuzzle == null) return 2.0;
-    
-    // Only use smart zoom if visual hints are enabled
-    if (!_showVisualHints) {
-      // Default zoom based on difficulty - more conservative
-      switch (_currentDifficulty) {
-        case Difficulty.easy:
-          return 2.5;  // Continental level
-        case Difficulty.medium:
-          return 3.0;  // Country level
-        case Difficulty.hard:
-          return 4.0;  // Regional level
-      }
-    }
-    
-    final distanceClues = _getRevealedDistanceClues();
-    if (distanceClues.isNotEmpty) {
-      // Calculate average distance to determine zoom level
-      double totalDistance = 0;
-      int count = 0;
-      
-      for (final clue in distanceClues) {
-        if (clue.data != null && clue.data!['value_km'] != null) {
-          totalDistance += clue.data!['value_km'] as double;
-          count++;
-        }
-      }
-      
-      if (count > 0) {
-        final avgDistance = totalDistance / count;
-        
-        // More conservative smart zoom based on average distance
-        if (avgDistance < 100) return 6.0;     // Close - regional level
-        if (avgDistance < 500) return 4.0;     // Medium - country level
-        if (avgDistance < 1000) return 3.0;    // Far - continental level
-        if (avgDistance < 3000) return 2.5;    // Very far - continental level
-        return 2.0;                            // Global level
-      }
-    }
-    
-    // Default zoom based on difficulty - more conservative
-    switch (_currentDifficulty) {
-      case Difficulty.easy:
-        return 2.5;  // Continental level
-      case Difficulty.medium:
-        return 3.0;  // Country level
-      case Difficulty.hard:
-        return 4.0;  // Regional level
-    }
+  double _getInitialZoomLevel() {
+    return _getDifficultyZoomLevel();
   }
-
 
 }

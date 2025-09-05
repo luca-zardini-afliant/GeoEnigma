@@ -90,6 +90,27 @@ class _GameScreenState extends State<GameScreen> {
     });
     
     print('After reveal - revealed IDs: $_revealedClueIds');
+    
+    // If this is a distance clue, show a special message
+    if (clue.type == 'distance') {
+      _showDistanceClueMessage(clue);
+    }
+  }
+
+  void _showDistanceClueMessage(Clue clue) {
+    if (clue.data != null && clue.data!['from_city'] != null && clue.data!['value_km'] != null) {
+      final cityName = clue.data!['from_city'] as String;
+      final distance = clue.data!['value_km'] as double;
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('🗺️ Distance hint revealed! Look for the blue circle around $cityName (${distance.toInt()} km radius)'),
+          duration: const Duration(seconds: 4),
+          backgroundColor: Colors.blue,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   void _onMapTap(TapPosition tapPosition, LatLng point) {
@@ -674,8 +695,8 @@ class _GameScreenState extends State<GameScreen> {
       margin: const EdgeInsets.all(8.0),
       child: FlutterMap(
         options: MapOptions(
-          initialCenter: const LatLng(20.0, 0.0),
-          initialZoom: 2.0,
+          initialCenter: _getSmartInitialCenter(),
+          initialZoom: _getSmartInitialZoom(),
           onTap: _onMapTap,
         ),
         children: [
@@ -684,12 +705,32 @@ class _GameScreenState extends State<GameScreen> {
             subdomains: const ['a', 'b', 'c', 'd'],
             userAgentPackageName: 'com.example.global_enigma',
           ),
+          // Distance circles for revealed distance clues
+          ..._buildDistanceCircles(),
+          // Reference city markers for distance clues
+          ..._buildReferenceCityMarkers(),
+          // User guess marker
           if (_guessLocation != null)
             MarkerLayer(
               markers: [
                 Marker(
                   point: _guessLocation!,
-                  child: const Icon(Icons.location_on, color: Colors.red, size: 30),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white, width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.location_on, color: Colors.white, size: 20),
+                  ),
                 ),
               ],
             ),
@@ -707,5 +748,178 @@ class _GameScreenState extends State<GameScreen> {
       case Difficulty.hard:
         return Colors.red;
     }
+  }
+
+  // Smart zoom and center calculation based on revealed clues
+  LatLng _getSmartInitialCenter() {
+    if (_currentPuzzle == null) return const LatLng(20.0, 0.0);
+    
+    // If we have distance clues revealed, center on the reference cities
+    final distanceClues = _getRevealedDistanceClues();
+    if (distanceClues.isNotEmpty) {
+      double totalLat = 0;
+      double totalLon = 0;
+      int count = 0;
+      
+      for (final clue in distanceClues) {
+        if (clue.data != null && clue.data!['from_city_coords'] != null) {
+          final coords = clue.data!['from_city_coords'] as Map<String, dynamic>;
+          totalLat += coords['lat'] as double;
+          totalLon += coords['lon'] as double;
+          count++;
+        }
+      }
+      
+      if (count > 0) {
+        return LatLng(totalLat / count, totalLon / count);
+      }
+    }
+    
+    // Default center
+    return const LatLng(20.0, 0.0);
+  }
+
+  double _getSmartInitialZoom() {
+    if (_currentPuzzle == null) return 2.0;
+    
+    final distanceClues = _getRevealedDistanceClues();
+    if (distanceClues.isNotEmpty) {
+      // Calculate average distance to determine zoom level
+      double totalDistance = 0;
+      int count = 0;
+      
+      for (final clue in distanceClues) {
+        if (clue.data != null && clue.data!['value_km'] != null) {
+          totalDistance += clue.data!['value_km'] as double;
+          count++;
+        }
+      }
+      
+      if (count > 0) {
+        final avgDistance = totalDistance / count;
+        
+        // Smart zoom based on average distance
+        if (avgDistance < 50) return 8.0;      // Very close - city level
+        if (avgDistance < 200) return 6.0;     // Close - regional level
+        if (avgDistance < 500) return 5.0;     // Medium - country level
+        if (avgDistance < 1000) return 4.0;    // Far - continental level
+        if (avgDistance < 3000) return 3.0;    // Very far - continental level
+        return 2.0;                            // Global level
+      }
+    }
+    
+    // Default zoom based on difficulty
+    switch (_currentDifficulty) {
+      case Difficulty.easy:
+        return 3.0;  // Country level
+      case Difficulty.medium:
+        return 4.0;  // Regional level
+      case Difficulty.hard:
+        return 5.0;  // City level
+    }
+  }
+
+  List<Clue> _getRevealedDistanceClues() {
+    if (_currentPuzzle == null) return [];
+    
+    return _currentPuzzle!.clues.where((clue) {
+      return clue.type == 'distance' && 
+             _revealedClueIds.contains(_currentPuzzle!.clues.indexOf(clue).toString());
+    }).toList();
+  }
+
+  List<Widget> _buildDistanceCircles() {
+    final distanceClues = _getRevealedDistanceClues();
+    if (distanceClues.isEmpty) return [];
+
+    List<Widget> circles = [];
+    
+    for (final clue in distanceClues) {
+      if (clue.data != null && 
+          clue.data!['from_city_coords'] != null && 
+          clue.data!['value_km'] != null) {
+        
+        final coords = clue.data!['from_city_coords'] as Map<String, dynamic>;
+        final distanceKm = clue.data!['value_km'] as double;
+        final center = LatLng(coords['lat'] as double, coords['lon'] as double);
+        
+        // Convert km to meters for the circle radius
+        final radiusMeters = distanceKm * 1000;
+        
+        circles.add(
+          CircleLayer(
+            circles: [
+              CircleMarker(
+                point: center,
+                radius: radiusMeters,
+                color: Colors.blue.withOpacity(0.3),
+                borderColor: Colors.blue.withOpacity(0.8),
+                borderStrokeWidth: 2.0,
+              ),
+            ],
+          ),
+        );
+      }
+    }
+    
+    return circles;
+  }
+
+  List<Widget> _buildReferenceCityMarkers() {
+    final distanceClues = _getRevealedDistanceClues();
+    if (distanceClues.isEmpty) return [];
+
+    List<Widget> markers = [];
+    
+    for (final clue in distanceClues) {
+      if (clue.data != null && clue.data!['from_city_coords'] != null) {
+        final coords = clue.data!['from_city_coords'] as Map<String, dynamic>;
+        final cityName = clue.data!['from_city'] as String;
+        final center = LatLng(coords['lat'] as double, coords['lon'] as double);
+        
+        markers.add(
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: center,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.location_city, color: Colors.white, size: 16),
+                      const SizedBox(height: 2),
+                      Text(
+                        cityName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+    
+    return markers;
   }
 }

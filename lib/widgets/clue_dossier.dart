@@ -56,14 +56,16 @@ class ClueDossier extends StatelessWidget {
                   width: 1,
                 ),
               ),
-              child: Text(
-                isRevealed ? clue.text : '???',
-                style: TextStyle(
-                  color: isRevealed ? Colors.black : Colors.grey,
-                  fontWeight: isRevealed ? FontWeight.normal : FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
+              child: isRevealed 
+                ? _buildRevealedClue(clue)
+                : Text(
+                    '???',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
             ),
           ),
           if (!isRevealed)
@@ -113,6 +115,121 @@ class ClueDossier extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+
+  Widget _buildRevealedClue(Clue clue) {
+    switch (clue.type) {
+      case 'image':
+        return _buildImageClue(clue);
+      case 'distance':
+        return _buildDistanceClue(clue);
+      default:
+        return _buildTextClue(clue);
+    }
+  }
+
+  Widget _buildTextClue(Clue clue) {
+    return Text(
+      clue.text,
+      style: const TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.normal,
+        fontSize: 14,
+      ),
+    );
+  }
+
+  Widget _buildImageClue(Clue clue) {
+    final imageUrl = clue.data?['url'] as String?;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          clue.text,
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.normal,
+            fontSize: 14,
+          ),
+        ),
+        if (imageUrl != null) ...[
+          const SizedBox(height: 8),
+          Container(
+            height: 60,
+            width: 90,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade400),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: Image.asset(
+                imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey.shade200,
+                    child: const Center(
+                      child: Icon(
+                        Icons.flag,
+                        color: Colors.grey,
+                        size: 30,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildDistanceClue(Clue clue) {
+    final fromCity = clue.data?['from_city'] as String?;
+    final distance = clue.data?['value_km'] as int?;
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          clue.text,
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.normal,
+            fontSize: 14,
+          ),
+        ),
+        if (fromCity != null && distance != null) ...[
+          const SizedBox(height: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.blue.shade200),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.location_on, size: 16, color: Colors.blue),
+                const SizedBox(width: 4),
+                Text(
+                  '$distance km from $fromCity',
+                  style: TextStyle(
+                    color: Colors.blue.shade700,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

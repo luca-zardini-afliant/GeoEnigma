@@ -874,8 +874,8 @@ class _GameScreenState extends State<GameScreen> {
         final distanceKm = clue.data!['value_km'] as double;
         final center = LatLng(coords['lat'] as double, coords['lon'] as double);
         
-        // Convert km to meters for the circle radius, but limit the size
-        final radiusMeters = (distanceKm * 1000).clamp(10000.0, 500000.0); // Min 10km, Max 500km radius
+        // Convert km to meters for the circle radius, but make it much smaller for visibility
+        final radiusMeters = (distanceKm * 100).clamp(5000.0, 100000.0); // Min 5km, Max 100km radius
         
         circles.add(
           CircleLayer(
@@ -883,8 +883,8 @@ class _GameScreenState extends State<GameScreen> {
               CircleMarker(
                 point: center,
                 radius: radiusMeters,
-                color: Colors.blue.withOpacity(0.15), // Slightly more visible
-                borderColor: Colors.blue.withOpacity(0.7),
+                color: Colors.blue.withOpacity(0.1), // More subtle
+                borderColor: Colors.blue.withOpacity(0.5),
                 borderStrokeWidth: 2.0,
               ),
             ],
@@ -914,7 +914,7 @@ class _GameScreenState extends State<GameScreen> {
               Marker(
                 point: center,
                 child: Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(4),
                   decoration: BoxDecoration(
                     color: Colors.blue,
                     borderRadius: BorderRadius.circular(20),
@@ -936,10 +936,12 @@ class _GameScreenState extends State<GameScreen> {
                         cityName,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 10,
+                          fontSize: 8,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

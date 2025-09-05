@@ -30,6 +30,7 @@ class _GameScreenState extends State<GameScreen> {
   bool _gameEnded = false;
   bool _isLoading = true;
   Difficulty _currentDifficulty = Difficulty.easy;
+  bool _isHintsDrawerOpen = false;
 
   @override
   void initState() {
@@ -72,6 +73,16 @@ class _GameScreenState extends State<GameScreen> {
         _guessLocation = point;
       });
     }
+  }
+
+  void _toggleHintsDrawer() {
+    setState(() {
+      _isHintsDrawerOpen = !_isHintsDrawerOpen;
+    });
+  }
+
+  bool _isMobileScreen(BuildContext context) {
+    return MediaQuery.of(context).size.width < 768;
   }
 
   void _confirmGuess() async {
@@ -364,46 +375,171 @@ class _GameScreenState extends State<GameScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          ScoreDisplay(score: _score),
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: ClueDossier(
-                    clues: _currentPuzzle!.clues,
-                    revealedClueIds: _revealedClueIds,
-                    onRevealClue: _revealClue,
-                  ),
+      body: _isMobileScreen(context) ? _buildMobileLayout() : _buildDesktopLayout(),
+      floatingActionButton: _isMobileScreen(context) 
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                onPressed: _toggleHintsDrawer,
+                heroTag: "hints",
+                backgroundColor: Colors.purple,
+                child: Icon(
+                  _isHintsDrawerOpen ? Icons.close : Icons.lightbulb_outline,
                 ),
-                Expanded(
-                  flex: 2,
-                  child: _buildMapView(),
-                ),
-              ],
-            ),
+                tooltip: _isHintsDrawerOpen ? 'Close Hints' : 'Open Hints',
+              ),
+              const SizedBox(height: 16),
+              FloatingActionButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                  );
+                },
+                heroTag: "profile",
+                child: const Icon(Icons.person),
+                tooltip: 'View Profile',
+              ),
+            ],
+          )
+        : FloatingActionButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+            },
+            child: const Icon(Icons.person),
+            tooltip: 'View Profile',
           ),
-          if (_guessLocation != null && !_gameEnded)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: _confirmGuess,
-                child: const Text('Confirm Guess'),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Stack(
+      children: [
+        // Main content
+        Column(
+          children: [
+            ScoreDisplay(score: _score),
+            Expanded(
+              child: _buildMapView(),
+            ),
+            if (_guessLocation != null && !_gameEnded)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButton(
+                  onPressed: _confirmGuess,
+                  child: const Text('Confirm Guess'),
+                ),
+              ),
+          ],
+        ),
+        // Hints drawer overlay
+        if (_isHintsDrawerOpen)
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(2, 0),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  // Drawer header
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.purple,
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.lightbulb_outline, color: Colors.white),
+                        const SizedBox(width: 8),
+                        const Text(
+                          'Clues',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: _toggleHintsDrawer,
+                          icon: const Icon(Icons.close, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Clues content
+                  Expanded(
+                    child: ClueDossier(
+                      clues: _currentPuzzle!.clues,
+                      revealedClueIds: _revealedClueIds,
+                      onRevealClue: _revealClue,
+                    ),
+                  ),
+                ],
               ),
             ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const ProfileScreen()),
-          );
-        },
-        child: const Icon(Icons.person),
-        tooltip: 'View Profile',
-      ),
+          ),
+        // Backdrop
+        if (_isHintsDrawerOpen)
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: _toggleHintsDrawer,
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return Column(
+      children: [
+        ScoreDisplay(score: _score),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: ClueDossier(
+                  clues: _currentPuzzle!.clues,
+                  revealedClueIds: _revealedClueIds,
+                  onRevealClue: _revealClue,
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: _buildMapView(),
+              ),
+            ],
+          ),
+        ),
+        if (_guessLocation != null && !_gameEnded)
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: _confirmGuess,
+              child: const Text('Confirm Guess'),
+            ),
+          ),
+      ],
     );
   }
 

@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../models/puzzle_model.dart';
 import '../services/puzzle_service.dart';
 import '../services/user_storage_service.dart';
+import '../services/sound_service.dart';
 import '../widgets/clue_dossier.dart';
 import '../widgets/score_display.dart';
 import 'start_screen.dart';
@@ -31,12 +33,25 @@ class _GameScreenState extends State<GameScreen> {
   bool _isLoading = true;
   Difficulty _currentDifficulty = Difficulty.easy;
   bool _isHintsDrawerOpen = false;
+  
+  // Timer variables
+  Timer? _timer;
+  int _timeRemaining = 300; // 5 minutes in seconds
+  bool _timerActive = false;
+  bool _timerMode = false;
 
   @override
   void initState() {
     super.initState();
     _currentDifficulty = widget.initialDifficulty;
     _loadPuzzles();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadPuzzles() async {
@@ -66,6 +81,9 @@ class _GameScreenState extends State<GameScreen> {
     print('Revealing clue $clueIndex: ${clue.text}');
     print('Current revealed IDs: $_revealedClueIds');
     
+    // Play hint reveal sound
+    SoundService.playHintRevealSound();
+    
     setState(() {
       _revealedClueIds.add(clueIndex.toString());
       _score += clue.cost; // cost is negative, so this subtracts from score
@@ -76,6 +94,8 @@ class _GameScreenState extends State<GameScreen> {
 
   void _onMapTap(TapPosition tapPosition, LatLng point) {
     if (!_gameEnded) {
+      // Play click sound for map tap
+      SoundService.playClickSound();
       setState(() {
         _guessLocation = point;
       });
@@ -83,6 +103,8 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _toggleHintsDrawer() {
+    // Play click sound for drawer toggle
+    SoundService.playClickSound();
     setState(() {
       _isHintsDrawerOpen = !_isHintsDrawerOpen;
     });
@@ -90,6 +112,67 @@ class _GameScreenState extends State<GameScreen> {
 
   bool _isMobileScreen(BuildContext context) {
     return MediaQuery.of(context).size.width < 768;
+  }
+
+  void _startTimer() {
+    _timerMode = true;
+    _timerActive = true;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_timeRemaining > 0 && _timerActive && !_gameEnded) {
+        setState(() {
+          _timeRemaining--;
+        });
+      } else if (_timeRemaining <= 0 && !_gameEnded) {
+        _timeUp();
+      }
+    });
+  }
+
+  void _pauseTimer() {
+    setState(() {
+      _timerActive = !_timerActive;
+    });
+  }
+
+  void _timeUp() {
+    setState(() {
+      _timerActive = false;
+      _gameEnded = true;
+    });
+    _timer?.cancel();
+    
+    // Show time up dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('⏰ Time\'s Up!'),
+        content: const Text('You ran out of time! Better luck next time.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).pop(); // Go back to start screen
+            },
+            child: const Text('Try Again'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatTime(int seconds) {
+    final minutes = seconds ~/ 60;
+    final remainingSeconds = seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
+
+  int _calculateTimeBonus() {
+    if (!_timerMode) return 0;
+    
+    // Bonus points based on remaining time
+    // 1 point per second remaining, max 300 points
+    return _timeRemaining;
   }
 
   void _confirmGuess() async {
@@ -102,7 +185,8 @@ class _GameScreenState extends State<GameScreen> {
 
     final penalty = (distance * 2).round();
     final bullseyeBonus = distance < 25 ? 500 : 0;
-    final finalScore = _score - penalty + bullseyeBonus;
+    final timeBonus = _calculateTimeBonus();
+    final finalScore = _score - penalty + bullseyeBonus + timeBonus;
 
     setState(() {
       _gameEnded = true;
@@ -121,7 +205,7 @@ class _GameScreenState extends State<GameScreen> {
       print('Error saving game result: $e');
     }
 
-    _showEndGameDialog(distance, finalScore, penalty, bullseyeBonus);
+    _showEndGameDialog(distance, finalScore, penalty, bullseyeBonus, timeBonus);
   }
 
   double _calculateDistance(LatLng point1, LatLng point2) {
@@ -129,7 +213,7 @@ class _GameScreenState extends State<GameScreen> {
     return distance.as(LengthUnit.Kilometer, point1, point2);
   }
 
-  void _showEndGameDialog(double distance, int finalScore, int penalty, int bullseyeBonus) {
+  void _showEndGameDialog(double distance, int finalScore, int penalty, int bullseyeBonus, int timeBonus) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -157,6 +241,7 @@ class _GameScreenState extends State<GameScreen> {
               Text('  Base Score: $_score'),
               Text('  Distance Penalty: -$penalty'),
               if (bullseyeBonus > 0) Text('  Bullseye Bonus: +$bullseyeBonus'),
+              if (timeBonus > 0) Text('  Time Bonus: +$timeBonus'),
             ],
           ),
         ),
@@ -364,6 +449,36 @@ class _GameScreenState extends State<GameScreen> {
           },
         ),
         actions: [
+          // Timer display
+          if (_timerMode)
+            Container(
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: _timeRemaining < 60 ? Colors.red : Colors.blue,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    _timerActive ? Icons.timer : Icons.pause,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    _formatTime(_timeRemaining),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          // Difficulty badge
           Container(
             margin: const EdgeInsets.only(right: 16),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

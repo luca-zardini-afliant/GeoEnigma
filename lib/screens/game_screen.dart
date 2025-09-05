@@ -441,7 +441,17 @@ class _GameScreenState extends State<GameScreen> {
               ),
           ],
         ),
-        // Hints drawer overlay
+        // Backdrop (rendered first, so it's behind the drawer)
+        if (_isHintsDrawerOpen)
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: _toggleHintsDrawer,
+              child: Container(
+                color: Colors.black.withOpacity(0.3),
+              ),
+            ),
+          ),
+        // Hints drawer overlay (rendered last, so it's on top)
         if (_isHintsDrawerOpen)
           Positioned(
             left: 0,
@@ -501,16 +511,6 @@ class _GameScreenState extends State<GameScreen> {
                         : const Center(child: Text('Loading clues...')),
                   ),
                 ],
-              ),
-            ),
-          ),
-        // Backdrop
-        if (_isHintsDrawerOpen)
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: _toggleHintsDrawer,
-              child: Container(
-                color: Colors.black.withOpacity(0.3),
               ),
             ),
           ),

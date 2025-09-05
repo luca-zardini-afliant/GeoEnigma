@@ -63,10 +63,15 @@ class _GameScreenState extends State<GameScreen> {
     if (_currentPuzzle == null) return;
     
     final clue = _currentPuzzle!.clues[clueIndex];
+    print('Revealing clue $clueIndex: ${clue.text}');
+    print('Current revealed IDs: $_revealedClueIds');
+    
     setState(() {
       _revealedClueIds.add(clueIndex.toString());
       _score += clue.cost; // cost is negative, so this subtracts from score
     });
+    
+    print('After reveal - revealed IDs: $_revealedClueIds');
   }
 
   void _onMapTap(TapPosition tapPosition, LatLng point) {

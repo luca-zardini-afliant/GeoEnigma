@@ -39,21 +39,39 @@ class ClueDossier extends StatelessWidget {
   Widget _buildClueItem(BuildContext context, int index, Clue clue) {
     final isRevealed = revealedClueIds.contains(index.toString());
     
+    print('Building clue $index: isRevealed=$isRevealed, text="${clue.text}"');
+    
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              isRevealed ? clue.text : '???',
-              style: TextStyle(
-                color: isRevealed ? null : Colors.grey,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+              decoration: BoxDecoration(
+                color: isRevealed ? Colors.green.shade50 : Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isRevealed ? Colors.green.shade200 : Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                isRevealed ? clue.text : '???',
+                style: TextStyle(
+                  color: isRevealed ? Colors.black : Colors.grey,
+                  fontWeight: isRevealed ? FontWeight.normal : FontWeight.bold,
+                  fontSize: 14,
+                ),
               ),
             ),
           ),
           if (!isRevealed)
             GestureDetector(
-              onTap: () => onRevealClue(index),
+              onTap: () {
+                print('Tapping reveal button for clue $index');
+                onRevealClue(index);
+              },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
@@ -68,6 +86,29 @@ class ClueDossier extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
+            )
+          else
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.check, color: Colors.white, size: 16),
+                  SizedBox(width: 4),
+                  Text(
+                    'Revealed',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
         ],

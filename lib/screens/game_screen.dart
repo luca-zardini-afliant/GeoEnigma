@@ -7,6 +7,7 @@ import '../services/user_storage_service.dart';
 import '../widgets/clue_dossier.dart';
 import '../widgets/score_display.dart';
 import 'start_screen.dart';
+import 'profile_screen.dart';
 
 class GameScreen extends StatefulWidget {
   final Difficulty initialDifficulty;
@@ -141,6 +142,13 @@ class _GameScreenState extends State<GameScreen> {
         ),
         actions: [
           TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close dialog
+              Navigator.of(context).pop(); // Go back to difficulty selection
+            },
+            child: const Text('Back to Menu'),
+          ),
+          TextButton(
             onPressed: _playAgain,
             child: const Text('Play Again'),
           ),
@@ -233,9 +241,7 @@ class _GameScreenState extends State<GameScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const StartScreen()),
-            );
+            Navigator.of(context).pop();
           },
         ),
         actions: [
@@ -287,6 +293,15 @@ class _GameScreenState extends State<GameScreen> {
               ),
             ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const ProfileScreen()),
+          );
+        },
+        child: const Icon(Icons.person),
+        tooltip: 'View Profile',
       ),
     );
   }

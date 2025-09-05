@@ -1,11 +1,37 @@
 import 'package:flutter/material.dart';
 import 'game_screen.dart';
 import 'profile_screen.dart';
+import '../services/user_storage_service.dart';
+import '../models/user_profile.dart';
 
 enum Difficulty { easy, medium, hard }
 
-class StartScreen extends StatelessWidget {
+class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
+
+  @override
+  State<StartScreen> createState() => _StartScreenState();
+}
+
+class _StartScreenState extends State<StartScreen> {
+  UserProfile? _userProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      final profile = await UserStorageService.loadUserProfile();
+      setState(() {
+        _userProfile = profile;
+      });
+    } catch (e) {
+      // Handle error silently
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +58,7 @@ class StartScreen extends StatelessWidget {
                   children: [
                     const SizedBox(width: 48), // Spacer for centering
                     const Text(
-                      'Global Enigma',
+                      'Choose Difficulty',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -71,7 +97,9 @@ class StartScreen extends StatelessWidget {
                             color: Colors.white70,
                           ),
                         ),
-                        const SizedBox(height: 48),
+                        const SizedBox(height: 32),
+                        if (_userProfile != null) _buildQuickStats(),
+                        const SizedBox(height: 24),
                         const Text(
                           'Choose Your Difficulty',
                           style: TextStyle(
@@ -181,10 +209,54 @@ class StartScreen extends StatelessWidget {
   }
 
   void _startGame(BuildContext context, Difficulty difficulty) {
-    Navigator.of(context).pushReplacement(
+    Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => GameScreen(initialDifficulty: difficulty),
       ),
+    );
+  }
+
+  Widget _buildQuickStats() {
+    if (_userProfile == null) return const SizedBox.shrink();
+    
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildStatItem('Games', _userProfile!.totalGamesPlayed.toString()),
+          _buildStatItem('Best Score', _userProfile!.bestScore.toString()),
+          _buildStatItem('Achievements', 
+            '${_userProfile!.achievements.where((a) => a.unlocked).length}/${_userProfile!.achievements.length}'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatItem(String label, String value) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.white70,
+          ),
+        ),
+      ],
     );
   }
 }

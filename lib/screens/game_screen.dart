@@ -740,7 +740,9 @@ class _GameScreenState extends State<GameScreen> {
         ),
         children: [
           TileLayer(
-            urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+            urlTemplate: _isDarkMode 
+                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
             subdomains: const ['a', 'b', 'c', 'd'],
             userAgentPackageName: 'com.example.global_enigma',
           ),
@@ -884,6 +886,7 @@ class _GameScreenState extends State<GameScreen> {
 
   List<Widget> _buildDistanceCircles() {
     final distanceClues = _getRevealedDistanceClues();
+    print('Building distance circles: ${distanceClues.length} clues found');
     if (distanceClues.isEmpty) return [];
 
     List<Widget> circles = [];
@@ -897,8 +900,9 @@ class _GameScreenState extends State<GameScreen> {
         final distanceKm = clue.data!['value_km'] as double;
         final center = LatLng(coords['lat'] as double, coords['lon'] as double);
         
-        // Convert km to meters for the circle radius, but make it much smaller for visibility
-        final radiusMeters = (distanceKm * 50).clamp(2000.0, 50000.0); // Min 2km, Max 50km radius
+        // Convert km to meters for the circle radius, make it more visible
+        final radiusMeters = (distanceKm * 100).clamp(10000.0, 100000.0); // Min 10km, Max 100km radius
+        print('Creating circle: ${distanceKm}km from ${coords['lat']}, ${coords['lon']} with radius ${radiusMeters}m');
         
         circles.add(
           CircleLayer(
@@ -906,8 +910,8 @@ class _GameScreenState extends State<GameScreen> {
               CircleMarker(
                 point: center,
                 radius: radiusMeters,
-                color: Colors.blue.withOpacity(0.05), // Very subtle
-                borderColor: Colors.blue.withOpacity(0.3),
+                color: Colors.blue.withOpacity(0.2), // More visible
+                borderColor: Colors.blue.withOpacity(0.8),
                 borderStrokeWidth: 2.0,
               ),
             ],

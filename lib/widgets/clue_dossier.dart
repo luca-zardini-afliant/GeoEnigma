@@ -175,8 +175,12 @@ class ClueDossier extends StatelessWidget {
   }
 
   Widget _buildFlagPlaceholder(String imageUrl) {
+    // Debug: print the URL to see what we're getting
+    print('Flag URL: $imageUrl');
+    
     // Create colored flag placeholders based on the URL
     if (imageUrl.contains('turkey.png')) {
+      print('Creating Turkey flag placeholder');
       return Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -250,6 +254,7 @@ class ClueDossier extends StatelessWidget {
       );
     } else {
       // Default fallback for other flags
+      print('Using default flag fallback for: $imageUrl');
       return Container(
         color: Colors.grey.shade200,
         child: const Center(

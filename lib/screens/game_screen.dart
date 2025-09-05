@@ -41,7 +41,7 @@ class _GameScreenState extends State<GameScreen> {
   bool _timerMode = false;
   
   // Visual hints toggle
-  bool _showVisualHints = true;
+  bool _showVisualHints = false; // Start with visual hints disabled
 
   @override
   void initState() {

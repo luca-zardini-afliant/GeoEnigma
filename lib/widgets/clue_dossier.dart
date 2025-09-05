@@ -145,6 +145,7 @@ class ClueDossier extends StatelessWidget {
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           clue.text,
@@ -157,8 +158,8 @@ class ClueDossier extends StatelessWidget {
         if (imageUrl != null) ...[
           const SizedBox(height: 8),
           Container(
-            height: 60,
-            width: 90,
+            height: 50,
+            width: 80,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.shade400),
               borderRadius: BorderRadius.circular(4),
@@ -175,7 +176,7 @@ class ClueDossier extends StatelessWidget {
                       child: Icon(
                         Icons.flag,
                         color: Colors.grey,
-                        size: 30,
+                        size: 24,
                       ),
                     ),
                   );
@@ -194,6 +195,7 @@ class ClueDossier extends StatelessWidget {
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           clue.text,
@@ -206,7 +208,7 @@ class ClueDossier extends StatelessWidget {
         if (fromCity != null && distance != null) ...[
           const SizedBox(height: 4),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
             decoration: BoxDecoration(
               color: Colors.blue.shade50,
               borderRadius: BorderRadius.circular(12),
@@ -215,14 +217,17 @@ class ClueDossier extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.location_on, size: 16, color: Colors.blue),
-                const SizedBox(width: 4),
-                Text(
-                  '$distance km from $fromCity',
-                  style: TextStyle(
-                    color: Colors.blue.shade700,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                const Icon(Icons.location_on, size: 14, color: Colors.blue),
+                const SizedBox(width: 3),
+                Flexible(
+                  child: Text(
+                    '$distance km from $fromCity',
+                    style: TextStyle(
+                      color: Colors.blue.shade700,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

@@ -60,6 +60,8 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _revealClue(int clueIndex) {
+    if (_currentPuzzle == null) return;
+    
     final clue = _currentPuzzle!.clues[clueIndex];
     setState(() {
       _revealedClueIds.add(clueIndex.toString());
@@ -485,11 +487,13 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                   // Clues content
                   Expanded(
-                    child: ClueDossier(
-                      clues: _currentPuzzle!.clues,
-                      revealedClueIds: _revealedClueIds,
-                      onRevealClue: _revealClue,
-                    ),
+                    child: _currentPuzzle != null
+                        ? ClueDossier(
+                            clues: _currentPuzzle!.clues,
+                            revealedClueIds: _revealedClueIds,
+                            onRevealClue: _revealClue,
+                          )
+                        : const Center(child: Text('Loading clues...')),
                   ),
                 ],
               ),
@@ -518,11 +522,13 @@ class _GameScreenState extends State<GameScreen> {
             children: [
               Expanded(
                 flex: 1,
-                child: ClueDossier(
-                  clues: _currentPuzzle!.clues,
-                  revealedClueIds: _revealedClueIds,
-                  onRevealClue: _revealClue,
-                ),
+                child: _currentPuzzle != null
+                    ? ClueDossier(
+                        clues: _currentPuzzle!.clues,
+                        revealedClueIds: _revealedClueIds,
+                        onRevealClue: _revealClue,
+                      )
+                    : const Center(child: Text('Loading clues...')),
               ),
               Expanded(
                 flex: 2,

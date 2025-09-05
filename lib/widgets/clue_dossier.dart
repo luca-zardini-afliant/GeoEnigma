@@ -52,9 +52,23 @@ class ClueDossier extends StatelessWidget {
             ),
           ),
           if (!isRevealed)
-            TextButton(
-              onPressed: () => onRevealClue(index),
-              child: Text('Reveal (${clue.cost})'),
+            GestureDetector(
+              onTap: () => onRevealClue(index),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.purple,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  'Reveal (${clue.cost})',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
         ],
       ),

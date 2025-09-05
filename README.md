@@ -23,7 +23,7 @@ Global Enigma is an interactive geography puzzle game that challenges players to
 
 1. **Clone and setup**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/luca-zardini-afliant/GeoEnigma.git
    cd GeoEnigma
    flutter pub get
    ```

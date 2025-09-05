@@ -92,14 +92,12 @@ class _GameScreenState extends State<GameScreen> {
 
     // Save game result to user profile
     try {
-      print('DEBUG: Recording game result - Score: $finalScore, Distance: $distance, Clues: ${_revealedClueIds.length}');
-      final updatedProfile = await UserStorageService.recordGameResult(
+      await UserStorageService.recordGameResult(
         difficulty: _currentDifficulty.name,
         score: finalScore,
         distance: distance,
         cluesUsed: _revealedClueIds.length,
       );
-      print('DEBUG: Game result recorded - Total games: ${updatedProfile.totalGamesPlayed}, Best score: ${updatedProfile.bestScore}');
     } catch (e) {
       // Log error but don't interrupt the game
       print('Error saving game result: $e');
@@ -130,6 +128,8 @@ class _GameScreenState extends State<GameScreen> {
                 height: 200,
                 child: _buildEndGameMap(distance),
               ),
+              const SizedBox(height: 8),
+              _buildMapLegend(),
               const SizedBox(height: 16),
               Text('Distance: ${distance.toStringAsFixed(1)} km'),
               const SizedBox(height: 8),
@@ -168,10 +168,24 @@ class _GameScreenState extends State<GameScreen> {
     final centerLat = (_guessLocation!.latitude + correctLocation.latitude) / 2;
     final centerLng = (_guessLocation!.longitude + correctLocation.longitude) / 2;
 
+    // Calculate appropriate zoom level based on distance
+    double zoomLevel;
+    if (distance < 100) {
+      zoomLevel = 8.0; // Very close - show detailed view
+    } else if (distance < 500) {
+      zoomLevel = 6.0; // Close - show regional view
+    } else if (distance < 2000) {
+      zoomLevel = 4.0; // Medium distance - show country view
+    } else if (distance < 5000) {
+      zoomLevel = 3.0; // Far - show continental view
+    } else {
+      zoomLevel = 2.0; // Very far - show global view
+    }
+
     return FlutterMap(
       options: MapOptions(
         initialCenter: LatLng(centerLat, centerLng),
-        initialZoom: 4.0,
+        initialZoom: zoomLevel,
         interactionOptions: const InteractionOptions(
           flags: InteractiveFlag.none,
         ),
@@ -186,11 +200,41 @@ class _GameScreenState extends State<GameScreen> {
           markers: [
             Marker(
               point: _guessLocation!,
-              child: const Icon(Icons.location_on, color: Colors.red, size: 30),
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white, width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.location_on, color: Colors.white, size: 20),
+              ),
             ),
             Marker(
               point: correctLocation,
-              child: const Icon(Icons.flag, color: Colors.green, size: 30),
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white, width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.flag, color: Colors.white, size: 20),
+              ),
             ),
           ],
         ),
@@ -199,9 +243,64 @@ class _GameScreenState extends State<GameScreen> {
             Polyline(
               points: [_guessLocation!, correctLocation],
               color: Colors.blue,
-              strokeWidth: 2.0,
+              strokeWidth: 4.0,
             ),
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMapLegend() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildLegendItem(
+            icon: Icons.location_on,
+            color: Colors.red,
+            label: 'Your Guess',
+          ),
+          _buildLegendItem(
+            icon: Icons.flag,
+            color: Colors.green,
+            label: 'Correct Location',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegendItem({
+    required IconData icon,
+    required Color color,
+    required String label,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white, width: 1),
+          ),
+          child: Icon(icon, color: Colors.white, size: 16),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
